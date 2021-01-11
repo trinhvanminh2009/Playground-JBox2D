@@ -172,6 +172,7 @@ class BubbleWorld(private val listener: Listener) {
     private fun destroyWorld() {
         var body = world.bodyList
         while (body != null) {
+            Log.e("body",body.toString())
             world.destroyBody(body)
             body = body.next
         }
@@ -183,6 +184,7 @@ class BubbleWorld(private val listener: Listener) {
     private fun update() {
         // Update Physics World
         world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS)
+
         Log.d(BubbleWorld::class.java.simpleName, "Update")
 
         var body = world.bodyList
@@ -263,6 +265,8 @@ class BubbleWorld(private val listener: Listener) {
         // Set the starting position anywhere within the world's boundaries.
         val startingX = (Math.random() * worldWidth).toFloat()
         val startingY = (Math.random() * worldHeight).toFloat()
+        Log.d("createBodyX", "X: $startingX" + " worldWidth: "+ worldWidth)
+        Log.d("createBodyY", "Y:  $startingY "+ " worldHeight: " + worldHeight)
 
         val bodyDef = BodyDef()
         bodyDef.type = BodyType.DYNAMIC

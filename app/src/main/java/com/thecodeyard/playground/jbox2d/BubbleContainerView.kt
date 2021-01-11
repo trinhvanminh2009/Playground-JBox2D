@@ -31,17 +31,17 @@ class BubbleContainerView @JvmOverloads constructor(context: Context, attrs: Att
         /**
          * The size (width and height) of the bubble view, in pixels.
          */
-        private const val BUBBLE_SIZE = 320
+        private const val BUBBLE_SIZE = 150
 
         /**
          * The amount of bubbles to create.
          */
-        private const val BUBBLE_COUNT = 6L
+        private const val BUBBLE_COUNT = 20L
 
         /**
          * The interval at which the bubbles are created one after the other.
          */
-        private const val BUBBLE_CREATION_INTERVAL = 500L
+        private const val BUBBLE_CREATION_INTERVAL = 1000L
     }
 
     private val world = BubbleWorld(this)
@@ -55,7 +55,7 @@ class BubbleContainerView @JvmOverloads constructor(context: Context, attrs: Att
         post {
             // Create the world if it's not already created.
             if (world.state == BubbleWorld.State.IDLE) {
-                world.create(measuredWidth, measuredHeight)
+                world.create(measuredWidth + 400, measuredHeight + 400)
                 createBubbles()
             }
 
@@ -79,7 +79,7 @@ class BubbleContainerView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     override fun onSimulationUpdate(bubble: Bubble) {
-        Log.d(BubbleContainerView::class.java.simpleName, "OnUpdate. id: ${bubble.viewId} x: ${bubble.viewX} y: ${bubble.viewY}")
+        //Log.d(BubbleContainerView::class.java.simpleName, "OnUpdate. id: ${bubble.viewId} x: ${bubble.viewX} y: ${bubble.viewY}")
         findViewById<BubbleView>(bubble.viewId)?.let {
             it.x = bubble.viewX
             it.y = bubble.viewY
@@ -101,16 +101,19 @@ class BubbleContainerView @JvmOverloads constructor(context: Context, attrs: Att
                 .observeOn(AndroidSchedulers.mainThread())
                 .take(BUBBLE_COUNT)
                 .subscribe {
-                    val index = it.toInt()
-                    val random = Random()
-                    val bubble = Bubble(viewId = View.generateViewId(),
+                    for(i in 1..2){
+                        val index = it.toInt()
+                        val random = Random()
+                        val bubble = Bubble(viewId = View.generateViewId(),
                             viewSize = BUBBLE_SIZE,
                             viewColor = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256)),
-                            viewText = "Bubble $index",
-                            viewX = 0f,
-                            viewY = 0f)
+                            viewText = "\uD83D\uDE4A",
+                            viewX = -10f,
+                            viewY =-10f)
 
-                    addBubbleView(bubble)
+                        addBubbleView(bubble)
+                    }
+
                 }
     }
 
@@ -121,8 +124,9 @@ class BubbleContainerView @JvmOverloads constructor(context: Context, attrs: Att
         val bubbleView = BubbleView(context)
         bubbleView.layoutParams = LayoutParams(bubble.viewSize, bubble.viewSize)
         bubbleView.id = bubble.viewId
-        bubbleView.background.setColorFilter(bubble.viewColor, PorterDuff.Mode.SRC_ATOP)
+       // bubbleView.background.setColorFilter(bubble.viewColor, PorterDuff.Mode.SRC_ATOP)
         bubbleView.text = bubble.viewText
+        bubbleView.textSize = 40.0F
 
         world.createBubble(bubble)
 
